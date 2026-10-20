@@ -17,7 +17,6 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SLUG = "the-pokemon-company-ptcg-ai-battle-challenge-playground"
 KERNEL_ID = "kellydannimao/ptcg-local-harness-meta-analysis-and-search"
 TITLE = "PTCG: Local Harness, Meta Analysis and Search"
-COMP_CG = f"/kaggle/input/{SLUG}/sample_submission/sample_submission/sample_submission"
 
 
 def md(text):
@@ -50,11 +49,15 @@ def main():
     cells += [
         md("## Tests\n\nTests that need the vendored public network or `kaggle_environments` skip "
            "themselves when those are not attached."),
-        code(f"import os\nos.environ['PTCG_CG_DIR'] = '{COMP_CG}'\n"
-             "!PTCG_CG_DIR=$PTCG_CG_DIR python -m pytest -q -p no:cacheprovider"),
+        code("import glob, os\n"
+             "hits = sorted(glob.glob('/kaggle/input/**/sample_submission/cg/api.py', recursive=True), key=len)\n"
+             "assert hits, 'attach the competition data as an input'\n"
+             "CG_DIR = os.path.dirname(os.path.dirname(hits[0]))\n"
+             "os.environ['PTCG_CG_DIR'] = CG_DIR\n"
+             "print('engine dir:', CG_DIR)"),
+        code("!python -m pytest -q -p no:cacheprovider"),
         md("## Demo: heuristic agent vs random, 20 best-of-three matches (sample deck)"),
-        code(f"!PTCG_CG_DIR={COMP_CG} python scripts/run_match.py heuristic random -n 20 -w 2 "
-             "--log /tmp/matches.jsonl"),
+        code("!python scripts/run_match.py heuristic random -n 20 -w 2 --log /tmp/matches.jsonl"),
         code("# Keep competition files out of this notebook's outputs.\n"
              "!rm -rf /kaggle/working/ptcg-ai/build /kaggle/working/ptcg-ai/results"),
     ]
