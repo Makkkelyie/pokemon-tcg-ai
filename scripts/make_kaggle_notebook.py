@@ -44,6 +44,8 @@ def main():
     ]
     for f in src:
         body = open(os.path.join(ROOT, f), encoding="utf-8").read()
+        if not body.strip():  # %%writefile refuses an empty cell body
+            body = "# (intentionally empty)\n"
         cells.append(code(f"%%writefile {f}\n{body}"))
     cells += [
         md("## Tests\n\nTests that need the vendored public network or `kaggle_environments` skip "
