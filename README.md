@@ -150,8 +150,12 @@ with wide intervals. Kaggle keeps two active submissions per team, so I built on
 
 | Submission | Local evidence | Leaderboard score |
 |---|---|---|
-| public-policy pilot, Deck A | sections 4 and 5 | *(pending: not submitted yet)* |
-| public-policy pilot, Deck B | sections 4 and 5 | *(pending: not submitted yet)* |
+| public-policy pilot, Deck A | sections 4 and 5 | 970.7 (provisional) |
+| public-policy pilot, Deck B | sections 4 and 5 | 911.2 (provisional) |
+
+Scores were read on 2026-10-20, 44 minutes after submission. Ratings start at μ0 = 600, and σ is still
+large this early, so the gap between the two decks is not yet meaningful. For scale, the top of the
+leaderboard was ≈ 1359 on the same day.
 
 ## What I learned
 
