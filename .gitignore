@@ -1,0 +1,12 @@
+# Competition data, engine binaries and decks are "Competition Use Only"
+# (Rules 2.4 / 3.6b: no redistribution, no public Pokémon Elements).
+data/
+decks/*.csv
+build/
+*.tar.gz
+results/*.jsonl
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+.DS_Store

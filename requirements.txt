@@ -1,0 +1,5 @@
+# Python >= 3.11 (Homebrew python3.13 used locally)
+numpy
+pytest
+# Optional, only for the parity test against the official environment:
+#   pip install --no-deps kaggle-environments==1.33.0 requests jsonschema
