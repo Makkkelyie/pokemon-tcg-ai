@@ -1,0 +1,25 @@
+=== deck ba2c3f50
+ps(mode=none,threads=1)[ba2c3f50] vs ext:dipam_fixed: 100 BO3 matches
+  match score 0.440  95% CI [0.347, 0.538]  W/L/D 44/56/0
+  game win rate 0.460  95% CI [0.400, 0.522]
+  A: 14.3 ms/decision, max pool used in one match 3.9s;  errors: 0
+=== deck 0cfe5f2b
+ps(mode=none,threads=1)[0cfe5f2b] vs ext:dipam_fixed: 100 BO3 matches
+  match score 0.470  95% CI [0.375, 0.567]  W/L/D 47/53/0
+  game win rate 0.483  95% CI [0.421, 0.546]
+  A: 14.2 ms/decision, max pool used in one match 2.7s;  errors: 0
+=== deck 38a4f4b5
+ps(mode=none,threads=1)[38a4f4b5] vs ext:dipam_fixed: 100 BO3 matches
+  match score 0.790  95% CI [0.700, 0.858]  W/L/D 79/21/0
+  game win rate 0.699  95% CI [0.639, 0.753]
+  A: 13.9 ms/decision, max pool used in one match 2.3s;  errors: 0
+=== deck b246db99
+ps(mode=none,threads=1)[b246db99] vs ext:dipam_fixed: 100 BO3 matches
+  match score 0.090  95% CI [0.048, 0.162]  W/L/D 9/91/0
+  game win rate 0.181  95% CI [0.137, 0.237]
+  A: 13.2 ms/decision, max pool used in one match 2.4s;  errors: 0
+=== deck fcc26c27
+ps(mode=none,threads=1)[fcc26c27] vs ext:dipam_fixed: 100 BO3 matches
+  match score 0.880  95% CI [0.802, 0.930]  W/L/D 88/12/0
+  game win rate 0.784  95% CI [0.727, 0.832]
+  A: 14.0 ms/decision, max pool used in one match 2.4s;  errors: 0

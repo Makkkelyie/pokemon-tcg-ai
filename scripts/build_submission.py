@@ -18,9 +18,11 @@ sys.path.insert(0, ROOT)
 from ptcg.engine import cg_dir, default_deck_path, load_deck  # noqa: E402
 
 RUNTIME_MODULES = [
-    "__init__.py", "engine.py", "cards.py", "state.py", "belief.py", "evaluate.py", "search_api.py",
-    "agents/__init__.py", "agents/base.py", "agents/heuristic.py", "agents/search.py",
+    "__init__.py", "engine.py", "cards.py", "state.py", "belief.py", "evaluate.py", "search_api.py", "meta.py",
+    "agents/__init__.py", "agents/base.py", "agents/heuristic.py", "agents/search.py", "agents/policy_search.py",
 ]
+DIPAM_DIR = os.path.join(ROOT, "data", "vendor", "dipam")  # scripts/setup_dipam.py
+META_DIR = os.path.join(ROOT, "decks", "meta")
 # Only the Linux x86-64 library is needed on Kaggle; keep the others for local testing.
 CG_FILES = ["__init__.py", "api.py", "game.py", "sim.py", "utils.py", "libcg.so", "libcg-arm64.so", "libcg.dylib"]
 
@@ -37,6 +39,16 @@ def build(deck_path, config, out_dir=os.path.join(ROOT, "build")):
         shutil.copy(os.path.join(cg_dir(), "cg", f), os.path.join(sub, "cg", f))
     with open(os.path.join(sub, "deck.csv"), "w") as f:
         f.write("\n".join(str(c) for c in deck) + "\n")
+    if config.get("agent") == "ps":
+        if not os.path.isdir(os.path.join(DIPAM_DIR, "dipam_ptcg")):
+            raise SystemExit("run scripts/setup_dipam.py first")
+        shutil.copytree(os.path.join(DIPAM_DIR, "dipam_ptcg"), os.path.join(sub, "dipam_ptcg"),
+                        ignore=shutil.ignore_patterns("__pycache__"))
+        shutil.copytree(os.path.join(DIPAM_DIR, "data"), os.path.join(sub, "data"))
+        shutil.copy(os.path.join(DIPAM_DIR, "model.pt"), os.path.join(sub, "model.pt"))
+        shutil.copy(os.path.join(DIPAM_DIR, "LICENSE"), os.path.join(sub, "LICENSE-dipam"))
+        if config.get("guess", "meta") == "meta" and os.path.isdir(META_DIR):
+            shutil.copytree(META_DIR, os.path.join(sub, "guess_pool"))
     with open(os.path.join(ROOT, "submission", "main.py")) as f:
         main = f.read()
     main = main.replace("_CONFIG = {}", f"_CONFIG = {json.dumps(config, sort_keys=True)}", 1)

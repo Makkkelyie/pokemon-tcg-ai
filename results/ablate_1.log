@@ -1,0 +1,18 @@
+=== ps mode=none threads=1
+  100/100  score=0.550  (142s)
+ps(mode=none,threads=1)[ogerpon_dipam] vs ext:dipam_fixed: 100 BO3 matches
+  match score 0.550  95% CI [0.452, 0.644]  W/L/D 55/45/0
+  game win rate 0.533  95% CI [0.470, 0.595]
+  A: 13.5 ms/decision, max pool used in one match 1.7s;  errors: 0
+=== ps mode=puct budget=0.3 rollout=greedy threads=1
+  100/100  score=0.490  (1743s)
+ps(budget=0.3,mode=puct,rollout=greedy,threads=1)[ogerpon_dipam] vs ext:dipam_fixed: 100 BO3 matches
+  match score 0.490  95% CI [0.394, 0.587]  W/L/D 49/51/0
+  game win rate 0.492  95% CI [0.431, 0.553]
+  A: 507.6 ms/decision, max pool used in one match 76.0s;  errors: 0
+=== ps mode=uniform budget=0.3 rollout=greedy margin=0.05 min_visits=3 threads=1
+  100/100  score=0.480  (2017s)
+ps(budget=0.3,margin=0.05,min_visits=3,mode=uniform,rollout=greedy,threads=1)[ogerpon_dipam] vs ext:dipam_fixed: 100 BO3 matches
+  match score 0.480  95% CI [0.385, 0.577]  W/L/D 48/52/0
+  game win rate 0.490  95% CI [0.429, 0.552]
+  A: 496.5 ms/decision, max pool used in one match 68.0s;  errors: 0

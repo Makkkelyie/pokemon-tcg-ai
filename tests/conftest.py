@@ -15,3 +15,7 @@ requires_engine = pytest.mark.skipif(not HAVE_ENGINE, reason="competition data (
 @pytest.fixture(scope="session")
 def deck():
     return load_deck(default_deck_path())
+
+HAVE_DIPAM = os.path.isdir(os.path.join(ROOT, "data", "vendor", "dipam", "dipam_ptcg"))
+requires_dipam = pytest.mark.skipif(not (HAVE_ENGINE and HAVE_DIPAM),
+                                    reason="vendored policy network missing (scripts/setup_dipam.py)")

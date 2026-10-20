@@ -1,0 +1,50 @@
+=== fcc26c27 vs dipam_fcc26c27
+ps(mode=none,threads=1)[fcc26c27] vs ext:dipam_fcc26c27: 60 BO3 matches
+  match score 0.533  95% CI [0.409, 0.654]  W/L/D 32/28/0
+  game win rate 0.539  95% CI [0.460, 0.617]
+  A: 15.1 ms/decision, max pool used in one match 2.2s;  errors: 0
+=== fcc26c27 vs dipam_38a4f4b5
+ps(mode=none,threads=1)[fcc26c27] vs ext:dipam_38a4f4b5: 60 BO3 matches
+  match score 0.367  95% CI [0.256, 0.493]  W/L/D 22/38/0
+  game win rate 0.387  95% CI [0.311, 0.469]
+  A: 20.6 ms/decision, max pool used in one match 6.2s;  errors: 0
+=== fcc26c27 vs dipam_ba2c3f50
+ps(mode=none,threads=1)[fcc26c27] vs ext:dipam_ba2c3f50: 60 BO3 matches
+  match score 0.600  95% CI [0.474, 0.714]  W/L/D 36/24/0
+  game win rate 0.573  95% CI [0.493, 0.650]
+  A: 17.1 ms/decision, max pool used in one match 3.9s;  errors: 0
+=== fcc26c27 vs r21
+ps(mode=none,threads=1)[fcc26c27] vs ext:r21: 60 BO3 matches
+  match score 1.000  95% CI [0.940, 1.000]  W/L/D 60/0/0
+  game win rate 0.976  95% CI [0.931, 0.992]
+  A: 20.1 ms/decision, max pool used in one match 3.2s;  errors: 0
+=== fcc26c27 vs v014
+ps(mode=none,threads=1)[fcc26c27] vs ext:v014: 60 BO3 matches
+  match score 1.000  95% CI [0.940, 1.000]  W/L/D 60/0/0
+  game win rate 0.930  95% CI [0.873, 0.963]
+  A: 13.2 ms/decision, max pool used in one match 1.7s;  errors: 0
+=== 38a4f4b5 vs dipam_fcc26c27
+ps(mode=none,threads=1)[38a4f4b5] vs ext:dipam_fcc26c27: 60 BO3 matches
+  match score 0.633  95% CI [0.507, 0.744]  W/L/D 38/22/0
+  game win rate 0.597  95% CI [0.517, 0.673]
+  A: 17.5 ms/decision, max pool used in one match 4.2s;  errors: 0
+=== 38a4f4b5 vs dipam_38a4f4b5
+ps(mode=none,threads=1)[38a4f4b5] vs ext:dipam_38a4f4b5: 60 BO3 matches
+  match score 0.500  95% CI [0.377, 0.623]  W/L/D 30/30/0
+  game win rate 0.486  95% CI [0.406, 0.567]
+  A: 19.6 ms/decision, max pool used in one match 3.4s;  errors: 0
+=== 38a4f4b5 vs dipam_ba2c3f50
+ps(mode=none,threads=1)[38a4f4b5] vs ext:dipam_ba2c3f50: 60 BO3 matches
+  match score 0.217  95% CI [0.131, 0.336]  W/L/D 13/47/0
+  game win rate 0.301  95% CI [0.232, 0.380]
+  A: 21.1 ms/decision, max pool used in one match 5.3s;  errors: 0
+=== 38a4f4b5 vs r21
+ps(mode=none,threads=1)[38a4f4b5] vs ext:r21: 60 BO3 matches
+  match score 0.983  95% CI [0.911, 0.997]  W/L/D 59/1/0
+  game win rate 0.869  95% CI [0.802, 0.915]
+  A: 29.3 ms/decision, max pool used in one match 7.0s;  errors: 0
+=== 38a4f4b5 vs v014
+ps(mode=none,threads=1)[38a4f4b5] vs ext:v014: 60 BO3 matches
+  match score 0.933  95% CI [0.841, 0.974]  W/L/D 56/4/0
+  game win rate 0.863  95% CI [0.793, 0.911]
+  A: 22.0 ms/decision, max pool used in one match 2.6s;  errors: 0

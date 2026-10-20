@@ -38,8 +38,14 @@ def _bo_decided(res, bo):
     return -1
 
 
-def play_match(agents, bo: int = 3, time_limit: float = 600.0, enforce_time: bool = False) -> MatchResult:
-    """Play one best-of-`bo` episode between two callables (Kaggle agent signature)."""
+def play_match(agents, bo: int = 3, time_limit: float = 600.0, enforce_time: bool = False,
+               pool_per_game: bool = True) -> MatchResult:
+    """Play one best-of-`bo` episode between two callables (Kaggle agent signature).
+
+    The ladder (kaggle-environments 1.32.7 in the replays) resets the 600 s pool
+    at the start of every game; pool_per_game=False shares one pool per match,
+    as kaggle-environments 1.33.0 does.
+    """
     cg = ensure_cg()
     game = cg.game
     out = MatchResult(winner=-1)
@@ -58,6 +64,7 @@ def play_match(agents, bo: int = 3, time_limit: float = 600.0, enforce_time: boo
 
     res = [0, 0, 0]
     count = 0
+    remaining = [time_limit, time_limit]
     while True:
         obs, sd = game.battle_start(decks[0], decks[1], count % 2 != 0)
         if obs is None:
@@ -65,7 +72,8 @@ def play_match(agents, bo: int = 3, time_limit: float = 600.0, enforce_time: boo
             out.errors.append(f"p{p} battle_start error {sd.errorType}")
             out.winner = 1 - p
             return out
-        remaining = [time_limit, time_limit]
+        if pool_per_game:
+            remaining = [time_limit, time_limit]
         steps = 0
         loser = -1
         while obs["current"]["result"] < 0:
@@ -97,7 +105,7 @@ def play_match(agents, bo: int = 3, time_limit: float = 600.0, enforce_time: boo
                 out.errors.append("step limit")
                 break
         for q in range(2):
-            out.max_game_time[q] = max(out.max_game_time[q], time_limit - remaining[q])
+            out.max_game_time[q] = max(out.max_game_time[q], time_limit - remaining[q])  # pool used so far
         game.battle_finish()
         if loser >= 0:  # error/timeout ends the whole episode, like the env
             out.winner = 1 - loser
@@ -138,6 +146,8 @@ class AgentSpec:
         return make_agent(self.name, load_deck(self.deck_path), seed=seed, **self.kwargs)
 
     def label(self):
+        if self.name == "ext":
+            return "ext:" + os.path.basename(os.path.normpath(self.kwargs.get("path", "?")))
         kw = ",".join(f"{k}={v}" for k, v in sorted(self.kwargs.items()))
         deck = os.path.splitext(os.path.basename(self.deck_path))[0]
         return f"{self.name}({kw})[{deck}]" if kw else f"{self.name}[{deck}]"

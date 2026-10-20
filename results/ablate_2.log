@@ -1,0 +1,1 @@
+=== ps mode=uniform budget=0.15 rollout=none dets=8 margin=0.05 min_visits=4 threads=1

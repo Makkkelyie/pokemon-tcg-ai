@@ -43,10 +43,11 @@ def main():
     ap.add_argument("--log", default="results/matches.jsonl", help="append summary here")
     args = ap.parse_args()
 
-    deck_a = args.deck_a or default_deck_path()
-    deck_b = args.deck_b or deck_a
-    a = AgentSpec(args.a, deck_a, parse_kw(args.a_kw))
-    b = AgentSpec(args.b, deck_b, parse_kw(args.b_kw))
+    kw_a, kw_b = parse_kw(args.a_kw), parse_kw(args.b_kw)
+    deck_a = args.deck_a or (os.path.join(kw_a["path"], "deck.csv") if args.a == "ext" else default_deck_path())
+    deck_b = args.deck_b or (os.path.join(kw_b["path"], "deck.csv") if args.b == "ext" else deck_a)
+    a = AgentSpec(args.a, deck_a, kw_a)
+    b = AgentSpec(args.b, deck_b, kw_b)
     t0 = time.time()
 
     def progress(rows):
@@ -61,7 +62,7 @@ def main():
     print(f"  match score {res['match_score']:.3f}  95% CI [{lo:.3f}, {hi:.3f}]  "
           f"W/L/D {res['wins']}/{res['losses']}/{res['draws']}")
     print(f"  game win rate {res['game_win_rate']:.3f}  95% CI [{glo:.3f}, {ghi:.3f}]")
-    print(f"  A: {res['ms_per_decision_a']:.1f} ms/decision, max think time in one game "
+    print(f"  A: {res['ms_per_decision_a']:.1f} ms/decision, max pool used in one match "
           f"{res['max_game_time_a']:.1f}s;  errors: {len(res['errors'])}")
     for e in res["errors"][:5]:
         print("   ", e)
