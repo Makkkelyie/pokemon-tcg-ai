@@ -4,6 +4,8 @@ An entry for Kaggle's [The Pokémon Company — PTCG AI Battle Challenge (Playgr
 a simulation competition: agents play best-of-three matches of the Pokémon Trading Card Game
 against each other on a ladder (Gaussian skill rating, final Bradley-Terry tournament).
 
+**Links:** [GitHub repository](https://github.com/Makkkelyie/pokemon-tcg-ai) · [Kaggle notebook with the same code](https://www.kaggle.com/code/kellydannimao/ptcg-local-harness-meta-analysis-and-search) (published on Kaggle, as competition rule 3.6b requires for publicly shared code)
+
 The project follows one rule throughout: **measure every change locally, with confidence
 intervals, before trusting it.** That rule is what turned up the two main findings below.
 First, deck choice moved local win rate far more than any search I added. Second, determinized
