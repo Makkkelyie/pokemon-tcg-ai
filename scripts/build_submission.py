@@ -27,9 +27,9 @@ META_DIR = os.path.join(ROOT, "decks", "meta")
 CG_FILES = ["__init__.py", "api.py", "game.py", "sim.py", "utils.py", "libcg.so", "libcg-arm64.so", "libcg.dylib"]
 
 
-def build(deck_path, config, out_dir=os.path.join(ROOT, "build")):
+def build(deck_path, config, out_dir=os.path.join(ROOT, "build"), name="submission"):
     deck = load_deck(deck_path)
-    sub = os.path.join(out_dir, "submission")
+    sub = os.path.join(out_dir, name)
     shutil.rmtree(sub, ignore_errors=True)
     os.makedirs(os.path.join(sub, "ptcg", "agents"))
     os.makedirs(os.path.join(sub, "cg"))
@@ -54,7 +54,7 @@ def build(deck_path, config, out_dir=os.path.join(ROOT, "build")):
     main = main.replace("_CONFIG = {}", f"_CONFIG = {json.dumps(config, sort_keys=True)}", 1)
     with open(os.path.join(sub, "main.py"), "w") as f:
         f.write(main)
-    tar_path = os.path.join(out_dir, "submission.tar.gz")
+    tar_path = os.path.join(out_dir, name + ".tar.gz")
     with tarfile.open(tar_path, "w:gz") as tar:
         for name in sorted(os.listdir(sub)):
             tar.add(os.path.join(sub, name), arcname=name,
@@ -65,9 +65,10 @@ def build(deck_path, config, out_dir=os.path.join(ROOT, "build")):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--deck", default=default_deck_path())
-    ap.add_argument("--config", default="{}", help="JSON kwargs for MCAgent")
+    ap.add_argument("--config", default="{}", help='JSON agent kwargs, e.g. {"agent": "ps", "mode": "none"}')
+    ap.add_argument("--name", default="submission", help="output folder / tarball name under build/")
     args = ap.parse_args()
-    sub, tar_path = build(args.deck, json.loads(args.config))
+    sub, tar_path = build(args.deck, json.loads(args.config), name=args.name)
     print(f"built {sub}\n      {tar_path} ({os.path.getsize(tar_path) / 1e6:.2f} MB)")
 
 

@@ -1,1 +1,6 @@
 === ps mode=uniform budget=0.15 rollout=none dets=8 margin=0.05 min_visits=4 threads=1
+  100/100  score=0.570  (544s)
+ps(budget=0.15,dets=8,margin=0.05,min_visits=4,mode=uniform,rollout=none,threads=1)[ogerpon_dipam] vs ext:dipam_fixed: 100 BO3 matches
+  match score 0.570  95% CI [0.472, 0.663]  W/L/D 57/43/0
+  game win rate 0.532  95% CI [0.470, 0.593]
+  A: 136.2 ms/decision, max pool used in one match 16.1s;  errors: 0
