@@ -54,9 +54,29 @@ print('LOADED')
     assert "LOADED" in out.stdout, out.stderr
 
 
+def _same_engine():
+    """True if kaggle_environments bundles the same engine library as the competition data."""
+    import hashlib
+    import platform
+
+    import kaggle_environments
+    from ptcg.engine import cg_dir
+    lib = {"Darwin": "libcg.dylib", "Windows": "cg.dll"}.get(platform.system(),
+                                                            "libcg-arm64.so" if platform.machine() in
+                                                            ("arm64", "aarch64") else "libcg.so")
+    env_lib = os.path.join(os.path.dirname(kaggle_environments.__file__), "envs", "cabt", "cg", lib)
+    comp_lib = os.path.join(cg_dir(), "cg", lib)
+    if not (os.path.exists(env_lib) and os.path.exists(comp_lib)):
+        return False
+    digest = lambda f: hashlib.sha256(open(f, "rb").read()).hexdigest()  # noqa: E731
+    return digest(env_lib) == digest(comp_lib)
+
+
 @requires_engine
 def test_official_env_parity(tmp_path):
     pytest.importorskip("kaggle_environments")
+    if not _same_engine():
+        pytest.skip("installed kaggle_environments bundles a different engine build than the competition data")
     sys.path.insert(0, os.path.join(ROOT, "scripts"))
     from build_submission import build
     from ptcg.engine import default_deck_path
