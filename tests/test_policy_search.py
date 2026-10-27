@@ -30,6 +30,19 @@ def test_ps_policy_only_is_fast(deck):
 
 
 @requires_dipam
+def test_ko_guard_replaces_end_only_with_a_ko(deck):
+    a = make_agent("ps", deck, seed=0, mode="none")
+    end, atk, play = {"type": 14}, {"type": 13, "attackId": 1}, {"type": 7, "index": 0}
+    obs = {"search_begin_input": "x", "select": {"type": 0, "option": [play, atk, end]}}
+    a._attack_kos = lambda o, i: True
+    assert a._guard_ko(obs, [2]) == [1]
+    assert a._guard_ko(obs, [0]) == [0]  # only an END is ever overridden
+    a._attack_kos = lambda o, i: False
+    assert a._guard_ko(obs, [2]) == [2]
+    assert a.stats["ko_guard"] == 1
+
+
+@requires_dipam
 def test_guess_pool_matches_revealed_cards():
     import random
     from collections import Counter

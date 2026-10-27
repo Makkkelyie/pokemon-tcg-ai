@@ -19,7 +19,11 @@ scripts/setup_dipam.py). This module is the search driver around it:
     boundaries; leaf = the value head;
   * override rule: deviate from the policy argmax only with >= `min_visits`
     rollouts and a mean advantage of at least `margin`;
-  * time manager: per-decision budget from the remaining 600 s game pool.
+  * time manager: per-decision budget from the remaining 600 s game pool;
+  * KO guard: if the chosen action is END while an attack is available, simulate
+    each attack in `ko_worlds` determinizations and play the first one that
+    knocks out the opponent's Active Pokémon in all of them (the network
+    sometimes ends the turn with a KO on the table; seen on the ladder).
 """
 import math
 import os
@@ -27,8 +31,11 @@ import sys
 import time
 
 from ..engine import REPO_ROOT, ensure_cg
+from ..state import ACTIVE, DISCARD, O_ATTACK, O_END, S_MAIN
 from .base import Agent
 from .heuristic import pick, score_all
+
+LOG_MOVE = 6  # log entry: card moved between areas
 
 
 def _vendor_dirs():
@@ -63,7 +70,8 @@ class PolicySearchAgent(Agent):
 
     def __init__(self, deck, seed=None, mode="puct", budget=0.5, k=4, dets=4, gate=1.0, depth=1,
                  rollout="greedy", max_steps=60, c_puct=1.5, margin=0.0, min_visits=2, max_sims=64,
-                 guess="meta", time_frac=0.04, reserve=60.0, threads=2, play_temp=0.0):
+                 guess="meta", time_frac=0.04, reserve=60.0, threads=2, play_temp=0.0, ko_guard=True,
+                 ko_worlds=2):
         super().__init__(deck, seed)
         (SearchAgent, self.InfoTracker, self.sbegin, self.sstep, self.send, base) = _import_dipam()
         import torch
@@ -90,8 +98,10 @@ class PolicySearchAgent(Agent):
         self.time_frac = float(time_frac)
         self.reserve = float(reserve)
         self.play_temp = float(play_temp)
+        self.ko_guard = bool(ko_guard)
+        self.ko_worlds = int(ko_worlds)
         self.pool = self._load_pool() if guess == "meta" else None
-        self.stats = {"decisions": 0, "searched": 0, "overrides": 0, "sims": 0, "errors": 0}
+        self.stats = {"decisions": 0, "searched": 0, "overrides": 0, "sims": 0, "errors": 0, "ko_guard": 0}
         self._reset_game_state()
 
     # ---------------------------------------------------------------- setup
@@ -120,6 +130,12 @@ class PolicySearchAgent(Agent):
 
     # ----------------------------------------------------------------- play
     def act(self, obs):
+        action = self._act(obs)
+        if self.ko_guard:
+            action = self._guard_ko(obs, action)
+        return action
+
+    def _act(self, obs):
         cur = obs["current"]
         if cur.get("round") != self.round:  # new game in the BO3: our deck knowledge restarts
             self.round = cur.get("round")
@@ -161,6 +177,44 @@ class PolicySearchAgent(Agent):
         if best != cands[0]:
             self.stats["overrides"] += 1
         return [best]
+
+    # ------------------------------------------------------------- KO guard
+    def _guard_ko(self, obs, action):
+        sel = obs["select"]
+        if (sel.get("type") != S_MAIN or len(action) != 1 or sel["option"][action[0]]["type"] != O_END
+                or not obs.get("search_begin_input")):
+            return action
+        attacks = [i for i, o in enumerate(sel["option"]) if o["type"] == O_ATTACK]
+        try:
+            for a in attacks:
+                if all(self._attack_kos(obs, a) for _ in range(self.ko_worlds)):
+                    self.stats["ko_guard"] += 1
+                    return [a]
+        except Exception:
+            self.stats["errors"] += 1
+        finally:
+            try:
+                self.send()
+            except Exception:
+                pass
+        return action
+
+    def _attack_kos(self, obs, attack):
+        """True if `attack` knocks out the opponent's Active Pokémon (or wins) in one determinization."""
+        cur = obs["current"]
+        me = cur["yourIndex"]
+        target = cur["players"][1 - me]["active"]
+        if not target or not target[0]:
+            return False
+        serial = target[0]["serial"]
+        (det, _guess) = self._world(obs)
+        root = self.sbegin(obs, *det)
+        st = self.sstep(root["searchId"], [attack])
+        sobs = st["observation"]
+        if sobs["current"]["result"] != -1:
+            return sobs["current"]["result"] == me
+        return any(log.get("type") == LOG_MOVE and log.get("serial") == serial and log.get("fromArea") == ACTIVE
+                   and log.get("toArea") == DISCARD for log in sobs.get("logs") or [])
 
     def _decision_budget(self, obs):
         rem = obs.get("remainingOverageTime")
