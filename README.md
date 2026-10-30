@@ -148,12 +148,37 @@ with wide intervals. Kaggle keeps two active submissions per team, so I built on
   decisions.
 * **Thinking time:** median pool use is 17 s per match (p90 69 s). Almost nobody searches deeply.
 
+### 6. The meta moved (ladder replays 2026-10-28/29, 3,317 BO3 matches; re-run of sections 4–5)
+
+Ten days after submission both decks had become the two weakest archetypes on the ladder
+(pilot-adjusted deck effect −134 and −157 Elo), and the score drifted down with them. The
+decks now on top mostly contain cards outside the network's vocabulary (6–21 cards map to the
+UNK embedding), so the network cannot pilot them. I re-ran the deck test with
+`scripts/deck_gauntlet.py`: each fully known candidate, piloted by the network with the KO guard,
+against the four testable meta decks (Deck E 34% share, F 10%, G 8%, H 5%), 24 matches per pairing.
+
+| Candidate | vs E | vs F | vs G | vs H | Share-weighted |
+|---|---|---|---|---|---|
+| Deck I (`5b3c6b0f`) | 0.58 | 0.71 | 0.96 | 0.96 | **0.69** |
+| Deck E (`1652a67e`) | 0.50 | 0.67 | 0.67 | 0.79 | 0.58 |
+| Deck F (`dc058243`) | 0.63 | 0.58 | 0.38 | 0.54 | 0.58 |
+| Deck A (submitted) | 0.17 | 0.46 | 0.00 | 0.04 | 0.19 |
+| Deck B (submitted) | 0.25 | 0.29 | 0.69 | 0.08 | 0.30 |
+
+Every pairing has an interval of about ±0.2, but the gap between the new and old decks is far
+larger than that. The two untestable top decks are left out, because a field piloted by a
+network that doesn't know their cards loses to everything (1.00 for every candidate). The new
+submissions are Deck I and Deck F. Deck F ties Deck E locally, and I chose it because its
+pilot-adjusted ladder effect is higher (+75 vs +13 Elo).
+
 ### Leaderboard
 
 | Submission | Local evidence | Leaderboard score |
 |---|---|---|
 | public-policy pilot, Deck A | sections 4 and 5 | 970.7 (provisional) |
 | public-policy pilot, Deck B | sections 4 and 5 | 911.2 (provisional) |
+| + KO guard, Deck A / Deck B | KO-guard replay study | 1022.0 / 1058.5 (2026-10-30) |
+| + KO guard, Deck I / Deck F | section 6 | submitted 2026-10-30 |
 
 Scores were read on 2026-10-20, 44 minutes after submission. Ratings start at μ0 = 600, and σ is still
 large this early, so the gap between the two decks is not yet meaningful. For scale, the top of the
